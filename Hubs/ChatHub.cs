@@ -1,12 +1,17 @@
+// Hubs/ChatHub.cs
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.Authorization;
-using System.Collections.Concurrent;
-using System.Security.Claims;
+using YourNamespace.Models;
+using YourNamespace.Repositories;
 
 [Authorize]
 public class ChatHub : Hub
 {
-    private static readonly ConcurrentDictionary<string, Room> Rooms = new ConcurrentDictionary<string, Room>();
+    private readonly IChatRoomRepository _roomRepository;
+
+    public ChatHub(IChatRoomRepository roomRepository)
+    {
+        _roomRepository = roomRepository;
+    }
 
     public async Task JoinRoom(string roomName)
     {
@@ -14,7 +19,9 @@ public class ChatHub : Hub
         var userAge = int.Parse(Context.User.FindFirst(ClaimTypes.DateOfBirth)?.Value ?? "0");
         var userCountry = Context.User.FindFirst(ClaimTypes.Country)?.Value;
 
-        if (!Rooms.TryGetValue(roomName, out var room))
+        var room = await _roomRepository.GetRoomByNameAsync(roomName);
+
+        if (room == null)
         {
             await Clients.Caller.SendAsync("ReceiveMessage", "System", "Room does not exist.");
             return;
@@ -38,30 +45,10 @@ public class ChatHub : Hub
 
     public async Task CreateRoom(string roomName, int minimumAge, string country = null)
     {
-        var newRoom = new Room { MinimumAge = minimumAge, Country = country };
-        if (Rooms.TryAdd(roomName, newRoom))
-        {
-            await Clients.All.SendAsync("RoomCreated", roomName, minimumAge, country);
-        }
-        else
-        {
-            await Clients.Caller.SendAsync("ReceiveMessage", "System", "Failed to create room. It may already exist.");
-        }
+        var newRoom = new ChatRoom { Name = roomName, MinimumAge = minimumAge, Country = country };
+        await _roomRepository.CreateRoomAsync(newRoom);
+        await Clients.All.SendAsync("RoomCreated", roomName, minimumAge, country);
     }
 
-    public async Task SendMessage(string message)
-    {
-        var roomName = Rooms.FirstOrDefault(r => r.Value.Users.Contains(Context.ConnectionId)).Key;
-        if (roomName != null)
-        {
-            await Clients.Group(roomName).SendAsync("ReceiveMessage", Context.User.Identity.Name, message);
-        }
-    }
-}
-
-public class Room
-{
-    public int MinimumAge { get; set; }
-    public string Country { get; set; }
-    public HashSet<string> Users { get; set; } = new HashSet<string>();
+    // ... other methods
 }
