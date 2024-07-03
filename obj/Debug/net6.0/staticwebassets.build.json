@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "Hash": "RTs31oPjmJjNenakNkkbr3q/X8loOzPom6fCfvWRbBc=",
+  "Source": "TinyChat",
+  "BasePath": "_content/TinyChat",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "TinyChat\\wwwroot",
+      "Source": "TinyChat",
+      "ContentRoot": "C:\\Users\\Dell\\Music\\TinyChat\\wwwroot\\",
+      "BasePath": "_content/TinyChat",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Dell\\Music\\TinyChat\\wwwroot\\chat.html",
+      "SourceId": "TinyChat",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Dell\\Music\\TinyChat\\wwwroot\\",
+      "BasePath": "_content/TinyChat",
+      "RelativePath": "chat.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\chat.html"
+    },
+    {
+      "Identity": "C:\\Users\\Dell\\Music\\TinyChat\\wwwroot\\chat.js",
+      "SourceId": "TinyChat",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Dell\\Music\\TinyChat\\wwwroot\\",
+      "BasePath": "_content/TinyChat",
+      "RelativePath": "chat.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\chat.js"
+    }
+  ]
+}

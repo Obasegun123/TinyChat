@@ -1,0 +1,106 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f8ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.chat-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 350px;
+}
+.chat-header {
+    background-color: #4a90e2;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.2em;
+}
+.chat-messages {
+    height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+}
+#conversationList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+#conversationList li {
+    background-color: #e6f2ff;
+    border-radius: 15px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    max-width: 80%;
+}
+#conversationList li:nth-child(odd) {
+    background-color: #d4e9ff;
+    align-self: flex-start;
+}
+.chat-input {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    background-color: #f1f1f1;
+}
+.input-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+input {
+    flex-grow: 1;
+    border: none;
+    padding: 10px;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+#sendButton {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+#sendButton:hover {
+    background-color: #357abd;
+}
+#roomInput {
+    width: calc(100% - 20px);
+    margin-bottom: 10px;
+}
+#joinRoomButton {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+#joinRoomButton:hover {
+    background-color: #45a049;
+}
+#roomInput.joined {
+    background-color: #e6ffe6;
+    border: 1px solid #4CAF50;
+}
+#roomStatus {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+#roomStatus.success {
+    color: #4CAF50;
+}
+#roomStatus.error {
+    color: #f44336;
+}
