@@ -42,3 +42,4 @@ C:\Users\Dell\Music\TinyChat\bin\Debug\net6.0\System.Text.Json.dll
 C:\Users\Dell\Music\TinyChat\bin\Debug\net6.0\System.Threading.Channels.dll
 C:\Users\Dell\Music\TinyChat\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
 C:\Users\Dell\Music\TinyChat\obj\Debug\net6.0\TinyChat.csproj.CopyComplete
+C:\Users\Dell\Music\TinyChat\obj\Debug\net6.0\TinyChat.MvcApplicationPartsAssemblyInfo.cs
