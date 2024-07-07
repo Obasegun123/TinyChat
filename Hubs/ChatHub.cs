@@ -1,54 +1,148 @@
-// Hubs/ChatHub.cs
+using AutoMapper;
+using TinyChat.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using YourNamespace.Models;
-using YourNamespace.Repositories;
+using System.Text.RegularExpressions;
+using TinyChat.Data;
+using TinyChat;
 
-[Authorize]
-public class ChatHub : Hub
+namespace TinyChat.Hubs
 {
-    private readonly IChatRoomRepository _roomRepository;
-
-    public ChatHub(IChatRoomRepository roomRepository)
+    [Authorize]
+    public class ChatHub : Hub
     {
-        _roomRepository = roomRepository;
-    }
+        public readonly static List<UserViewModel> _Connections = new List<UserViewModel>();
+        private readonly static Dictionary<string, string> _ConnectionsMap = new Dictionary<string, string>();
 
-    public async Task JoinRoom(string roomName)
-    {
-        var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var userAge = int.Parse(Context.User.FindFirst(ClaimTypes.DateOfBirth)?.Value ?? "0");
-        var userCountry = Context.User.FindFirst(ClaimTypes.Country)?.Value;
+        private readonly ChatDbContext _context;
+        private readonly IMapper _mapper;
 
-        var room = await _roomRepository.GetRoomByNameAsync(roomName);
-
-        if (room == null)
+        public ChatHub(ChatDbContext context, IMapper mapper)
         {
-            await Clients.Caller.SendAsync("ReceiveMessage", "System", "Room does not exist.");
-            return;
+            _context = context;
+            _mapper = mapper;
         }
 
-        if (userAge < room.MinimumAge)
+        public async Task SendPrivate(string receiverName, string message)
         {
-            await Clients.Caller.SendAsync("ReceiveMessage", "System", "You do not meet the age requirement for this room.");
-            return;
+            if (_ConnectionsMap.TryGetValue(receiverName, out string userId))
+            {
+                // Who is the sender;
+                var sender = _Connections.Where(u => u.UserName == IdentityName).First();
+
+                if (!string.IsNullOrEmpty(message.Trim()))
+                {
+                    // Build the message
+                    var messageViewModel = new MessageViewModel()
+                    {
+                        Content = Regex.Replace(message, @"<.*?>", string.Empty),
+                        FromUserName = sender.UserName,
+                        FromFullName = sender.FullName,
+                        Avatar = sender.Avatar,
+                        Room = "",
+                        Timestamp = DateTime.Now
+                    };
+
+                    // Send the message
+                    await Clients.Client(userId).SendAsync("newMessage", messageViewModel);
+                    await Clients.Caller.SendAsync("newMessage", messageViewModel);
+                }
+            }
         }
 
-        if (room.Country != null && room.Country != userCountry)
+        public async Task Join(string roomName)
         {
-            await Clients.Caller.SendAsync("ReceiveMessage", "System", "This room is restricted to users from a specific country.");
-            return;
+            try
+            {
+                var user = _Connections.Where(u => u.UserName == IdentityName).FirstOrDefault();
+                if (user != null && user.CurrentRoom != roomName)
+                {
+                    // Remove user from others list
+                    if (!string.IsNullOrEmpty(user.CurrentRoom))
+                        await Clients.OthersInGroup(user.CurrentRoom).SendAsync("removeUser", user);
+
+                    // Join to new chat room
+                    await Leave(user.CurrentRoom);
+                    await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+                    user.CurrentRoom = roomName;
+
+                    // Tell others to update their list of users
+                    await Clients.OthersInGroup(roomName).SendAsync("addUser", user);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Clients.Caller.SendAsync("onError", "You failed to join the chat room!" + ex.Message);
+            }
         }
 
-        await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
-        await Clients.Group(roomName).SendAsync("ReceiveMessage", "System", $"{Context.User.Identity.Name} has joined the room.");
-    }
+        public async Task Leave(string roomName)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+        }
 
-    public async Task CreateRoom(string roomName, int minimumAge, string country = null)
-    {
-        var newRoom = new ChatRoom { Name = roomName, MinimumAge = minimumAge, Country = country };
-        await _roomRepository.CreateRoomAsync(newRoom);
-        await Clients.All.SendAsync("RoomCreated", roomName, minimumAge, country);
-    }
+        public IEnumerable<UserViewModel> GetUsers(string roomName)
+        {
+            return _Connections.Where(u => u.CurrentRoom == roomName).ToList();
+        }
 
-    // ... other methods
+        public override Task OnConnectedAsync()
+        {
+            try
+            {
+                var user = _context.AppUsers.Where(u => u.UserName == IdentityName).FirstOrDefault();
+                var userViewModel = _mapper.Map<ApplicationUser, UserViewModel>(user);
+                userViewModel.Device = GetDevice();
+                userViewModel.CurrentRoom = "";
+
+                if (!_Connections.Any(u => u.UserName == IdentityName))
+                {
+                    _Connections.Add(userViewModel);
+                    _ConnectionsMap.Add(IdentityName, Context.ConnectionId);
+                }
+
+                Clients.Caller.SendAsync("getProfileInfo", userViewModel);
+            }
+            catch (Exception ex)
+            {
+                Clients.Caller.SendAsync("onError", "OnConnected:" + ex.Message);
+            }
+            return base.OnConnectedAsync();
+        }
+
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            try
+            {
+                var user = _Connections.Where(u => u.UserName == IdentityName).First();
+                _Connections.Remove(user);
+
+                // Tell other users to remove you from their list
+                Clients.OthersInGroup(user.CurrentRoom).SendAsync("removeUser", user);
+
+                // Remove mapping
+                _ConnectionsMap.Remove(user.UserName);
+            }
+            catch (Exception ex)
+            {
+                Clients.Caller.SendAsync("onError", "OnDisconnected: " + ex.Message);
+            }
+
+            return base.OnDisconnectedAsync(exception);
+        }
+
+        private string IdentityName
+        {
+            get { return Context.User.Identity.Name; }
+        }
+
+        private string GetDevice()
+        {
+            var device = Context.GetHttpContext().Request.Headers["Device"].ToString();
+            if (!string.IsNullOrEmpty(device) && (device.Equals("Desktop") || device.Equals("Mobile")))
+                return device;
+
+            return "Web";
+        }
+    }
 }

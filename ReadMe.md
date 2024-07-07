@@ -4,4 +4,4 @@ https://dev.to/kazinix/aspnet-core-tiny-chat-app-using-signalr-fgh
 
 i used claude for the initial pattern 
 
-Now i saw a sweet profile on github doing ame thing
+Now i saw a sweet profile on github doing same thing

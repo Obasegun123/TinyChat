@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using TinyChat.Helpers;
 
-namespace Chat.Web.Helpers
+namespace TinyChat
 {
     public class FileValidator : IFileValidator
     {
