@@ -8,44 +8,46 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace TinyChat.Data
 {
-    public class ChatDbContext : IdentityDbContext<ApplicationUser>
+  public class ChatDbContext : IdentityDbContext<ApplicationUser>
+  {
+    public ChatDbContext(DbContextOptions<ChatDbContext> options)
+      : base(options)
     {
-        public ChatDbContext(DbContextOptions<ChatDbContext> options)
-            : base(options)
-        {
-        }
-
-        public DbSet<Room> Rooms { get; set; }
-        public DbSet<Message> Messages { get; set; }
-        public DbSet<ApplicationUser> AppUsers { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            
-
-        }
-
-        private void Configure(EntityTypeBuilder<Room> builder)
-        {
-            builder.ToTable("Rooms");
-
-            builder.Property(s => s.Name).IsRequired().HasMaxLength(100);
-
-            builder.HasOne(s => s.Admin)
-                    .WithMany(u => u.Rooms)
-                    .IsRequired();
-        }
-
-        private void ConfigureMessage(EntityTypeBuilder<Message> builder)
-        {
-            builder.ToTable("Messages");
-
-            builder.Property(s => s.Content).IsRequired().HasMaxLength(500);
-
-            builder.HasOne(s => s.ToRoom)
-                   .WithMany(m => m.Messages)
-                   .HasForeignKey(s => s.ToRoomId)
-                   .OnDelete(DeleteBehavior.Cascade);
-}
     }
+
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<Message> Messages { get; set; }
+    public DbSet<ApplicationUser> AppUsers { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      base.OnModelCreating(modelBuilder);
+
+      modelBuilder.Entity<Room>(ConfigureRoom);
+      modelBuilder.Entity<Message>(ConfigureMessage);
+    }
+
+    private void ConfigureRoom(EntityTypeBuilder<Room> modelBuilder)
+    {
+      modelBuilder.ToTable("Rooms");
+
+      modelBuilder.Property(s => s.Name).IsRequired().HasMaxLength(100);
+
+      modelBuilder.HasOne(s => s.Admin)
+          .WithMany(u => u.Rooms)
+          .IsRequired();
+    }
+
+    private void ConfigureMessage(EntityTypeBuilder<Message> modelBuilder)
+    {
+      modelBuilder.ToTable("Messages");
+
+      modelBuilder.Property(s => s.Content).IsRequired().HasMaxLength(500);
+
+      modelBuilder.HasOne(s => s.ToRoom)
+          .WithMany(m => m.Messages)
+          .HasForeignKey(s => s.ToRoomId)
+          .OnDelete(DeleteBehavior.NoAction);
+    }
+  }
 }
