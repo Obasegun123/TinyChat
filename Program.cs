@@ -1,5 +1,4 @@
 using TinyChat.Helpers;
-using MySqlConnector;
 using TinyChat;
 using TinyChat.Data;
 using TinyChat.Hubs;
@@ -16,7 +15,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ChatDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddDefaultUI();
+
+builder.Services.AddRazorPages();
 builder.Services.Configure<DataProtectionTokenProviderOptions>(opts => opts.TokenLifespan = TimeSpan.FromHours(10));
 
 
@@ -30,6 +32,18 @@ builder.Services.Configure<IdentityOptions>(options =>
     //options.SignIn.RequireConfirmedAccount = true;
     //options.User.RequireUniqueEmail = true;
 });
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
+
        
 
 
@@ -38,7 +52,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<IFileValidator, FileValidator>();
 // builder.Services.AddScoped<IChatRoomRepository, ChatRoomRepository>();
-builder.Services.AddRazorPages();
+
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
 
@@ -77,6 +91,8 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapHub<ChatHub>("/chatHub");
-app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Account}/{action=SignIn}/{id?}");
 
 app.Run();

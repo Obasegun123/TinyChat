@@ -4,7 +4,24 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net6.0</TargetFramework>
+    <UserSecretsId>aspnet-Chat.Web-8692691F-5FD4-4BB5-A736-D380452CEE04</UserSecretsId>
+    <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+  
   </PropertyGroup>
+
+   <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\site.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\_content.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
@@ -19,5 +36,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.1" />
     <PackageReference Include="MySqlConnector.DependencyInjection" Version="2.3.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 </Project>

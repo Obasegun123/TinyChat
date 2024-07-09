@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Dell\\Music\\TinyChat\\TinyChat.csproj": {}
+    "c:\\Users\\Dell\\Music\\TinyChat\\TinyChat.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Dell\\Music\\TinyChat\\TinyChat.csproj": {
+    "c:\\Users\\Dell\\Music\\TinyChat\\TinyChat.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Dell\\Music\\TinyChat\\TinyChat.csproj",
+        "projectUniqueName": "c:\\Users\\Dell\\Music\\TinyChat\\TinyChat.csproj",
         "projectName": "TinyChat",
-        "projectPath": "C:\\Users\\Dell\\Music\\TinyChat\\TinyChat.csproj",
+        "projectPath": "c:\\Users\\Dell\\Music\\TinyChat\\TinyChat.csproj",
         "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Dell\\Music\\TinyChat\\obj\\",
+        "outputPath": "c:\\Users\\Dell\\Music\\TinyChat\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config"

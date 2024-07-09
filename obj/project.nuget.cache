@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uKlH3fanljTy/7X7PTkFq3Vs6UtsxI/7hENlMNca9mZOGQO7O8hi4Hm1Zh/q1gvINyhoF8zbuK2gyIbkqHz81Q==",
+  "dgSpecHash": "jnrX0T62n1o3SixTWhEOGen6izT6X92I53ADETTSX/GR4SPy+VD+/O8K120WDa5hoQHsI6HdyOXKDU4PwtIaXA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Dell\\Music\\TinyChat\\TinyChat.csproj",
+  "projectFilePath": "c:\\Users\\Dell\\Music\\TinyChat\\TinyChat.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Dell\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
     "C:\\Users\\Dell\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",
