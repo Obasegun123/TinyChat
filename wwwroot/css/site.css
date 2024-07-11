@@ -56,6 +56,18 @@
   content: "#";
   margin-right: 2px;
 }
+.sidebar .divider {
+  background-color: rgba(255, 255, 255, 0.2);
+  height: 1px;
+}
+.sidebar .btn-reset {
+  align-self: flex-start;
+  font-size: 14px;
+  margin: 16px 10px;
+}
+.sidebar .btn-reset:hover {
+  text-decoration: underline;
+}
 .sidebar .profile {
   display: flex;
   justify-content: space-between;
@@ -233,6 +245,13 @@
 .message-input-container .emojis-container button img {
   width: 16px;
   height: 16px;
+}
+
+.disabled {
+  cursor: default;
+}
+.disabled svg {
+  pointer-events: none;
 }
 
 .users-container {
@@ -492,7 +511,7 @@ body {
   display: none;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767.98px) {
   .app .sidebar {
     width: 200px;
     min-width: 200px;

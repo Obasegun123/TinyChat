@@ -1,4 +1,4 @@
-﻿$(function () {
+﻿﻿$(function () {
     $('ul#users-list').on('click', 'li', function () {
         var username = $(this).data("username");
         var input = $('#message-input');
@@ -46,6 +46,10 @@
 
     $(".modal").on("shown.bs.modal", function () {
         $(this).find("input[type=text]:first-child").focus();
+    });
+
+    $("#rename-room-modal").on("show.bs.modal", function () {
+        $(this).find("#newRoomName").val($("#joinedRoom").text());
     });
 
     $('.modal').on('hidden.bs.modal', function () {
